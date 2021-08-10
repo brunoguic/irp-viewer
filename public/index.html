@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="stylesheets/style.css">
+        <title>IRP Viewer</title>
+        <script type="text/javascript" src="javascripts/lib/charts_loader.js"></script>
+        <script>
+            google.charts.load('visualization', '1.1', {packages: ['corechart']});
+        </script>
+    </head>
+    <body id="bodyDiv">
+        <div id="container">
+            <div id="content" class="clearfix">
+                <div id="nav">
+                    <div id="welcomeLeft">
+                        <p class="welcome-title">Hello 👋</p>
+                        <p class="welcome-content">This site aims to help all participants from DIMACS-IRP competition to visualise their solutions.</p>
+                        <p class="welcome-content">To start is pretty simple, just drag an solution file to this screen.</p>
+                        <p class="welcome-content">All the processing will run in your browser, so no solution will be shared.</p>
+                        <p class="welcome-content">It will generate a link (very long link) with all the solution encoded, this way you can easy share the file.</p>
+                        <p class="welcome-content">Try an example by clicking <a href="#filename=out_S_abs1n5_2_L3.txt&content=Day%201%0ARoute%201:%200%20-%201%20(%2065.00%20)%20-%200%0ARoute%202:%200%20-%200%0ADay%202%0ARoute%201:%200%20-%203%20(%20116.00%20)%20-%200%0ARoute%202:%200%20-%204%20(%2048.00%20)%20-%202%20(%2035.00%20)%20-%205%20(%2022.00%20)%20-%200%0ADay%203%0ARoute%201:%200%20-%200%0ARoute%202:%200%20-%200%0A1302.00%0A9.88%0A61.53%0A1373.41%0A0.00%0A0.23%0A">here</a>.</p>
+                    </div>
+                    <div id="instanceDetail" style="display: none"></div>
+                    <div id="instanceDraw" style="display: none" class="solution"></div>
+                </div>
+                <div id="maincontent">
+                    <div id="mainContentTop">
+                        <div id="welcomeDetail">
+                            <p>Drag and drop your solution file here.</p>
+                        </div>
+                        <div id="solutionDetailValidBox" style="display: none">
+                            <p>✅ This is a valid solution.</p>
+                        </div>
+                        <div id="solutionDetailInvalidBox" style="display: none">
+                            <p>❌ This is an invalid solution. Check the errors below.</p>
+                        </div>
+                        <div id="solutionDetail" style="display: none">
+                        </div>
+                    </div>
+
+                    <div id="charts" style="display: none">
+                        <div id="solutionDrawT1" class="solution"></div>
+                        <div id="solutionDrawT2" class="solution"></div>
+                        <div id="solutionDrawT3" class="solution"></div>
+                        <div id="solutionDrawT4" class="solution"></div>
+                        <div id="solutionDrawT5" class="solution"></div>
+                        <div id="solutionDrawT6" class="solution"></div>
+                    </div>
+
+                    <div id="errors" style="display: none">
+                    </div>
+                </div>
+            </div>
+            <div id="header">
+                <!-- TopNav -->
+                <div id="topnav">
+                    <div class="moduletable">
+                        <h3>Top Menu</h3>
+                        <ul class="nav menu">
+                            <li class="item-117"><a href="http://galgos.inf.puc-rio.br/" target="_blank">Galgos</a></li>
+                            <li class="item-118"><a href="http://www.inf.puc-rio.br/" target="_blank">DI</a></li>
+                            <li class="item-119"><a href="http://www.puc-rio.br/" target="_blank">Puc-Rio</a></li>
+                            <li class="item-123"><a href="http://dimacs.rutgers.edu/programs/challenge/vrp/irp/" target="_blank">DIMACS</a></li>
+                            <li class="item-124"><a href="http://dimacs.rutgers.edu/programs/challenge/vrp/irp/" target="_blank">Source Code</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- Logo -->
+                <div id="logo">
+                    <a href="/">IRP Viewer</a><br>
+                    <div class="sitedescription">Inventory Routing Problem Viewer</div>
+                </div>
+            </div>
+        </div>
+        <div id="copyright">
+            ©2021 IRP Viewer | Inspired by <a href="http://vrp.atd-lab.inf.puc-rio.br/index.php/en/" target="_blank">CVRPLIB</a>
+        </div>
+        <!-- Must be the last element -->
+        <div id="overlay">
+            DROP HERE
+        </div>
+        <script type="module">
+            import {Viewer} from "./javascripts/viewer.js";
+
+            const body = document.getElementById("bodyDiv");
+            const overlay = document.getElementById("overlay");
+            const viewer = new Viewer();
+
+
+            google.charts.setOnLoadCallback(() => {
+                const welcomeDetailDiv = document.getElementById("welcomeDetail");
+                const solutionDetailDiv = document.getElementById("solutionDetail");
+                const solutionDetailValidBoxDiv = document.getElementById("solutionDetailValidBox");
+                const solutionDetailInvalidBoxDiv = document.getElementById("solutionDetailInvalidBox");
+
+                const chartsDiv = document.getElementById("charts");
+                const solutionDrawList = /** @type {HTMLElement[]} */ [];
+                solutionDrawList.push(document.getElementById("solutionDrawT1"));
+                solutionDrawList.push(document.getElementById("solutionDrawT2"));
+                solutionDrawList.push(document.getElementById("solutionDrawT3"));
+                solutionDrawList.push(document.getElementById("solutionDrawT4"));
+                solutionDrawList.push(document.getElementById("solutionDrawT5"));
+                solutionDrawList.push(document.getElementById("solutionDrawT6"));
+                const errorsDiv = document.getElementById("errors");
+
+                const welcomeLeftDiv = document.getElementById("welcomeLeft");
+                const instanceDetailDiv = document.getElementById("instanceDetail");
+                const instanceDraw = document.getElementById("instanceDraw");
+
+                viewer.init(
+                    welcomeDetailDiv, solutionDetailDiv, solutionDetailValidBoxDiv, solutionDetailInvalidBoxDiv,
+                    chartsDiv, solutionDrawList, errorsDiv,
+                    welcomeLeftDiv, instanceDetailDiv, instanceDraw);
+            });
+
+            function dropHandler(ev) {
+                // Prevent default behavior (Prevent file from being opened)
+                ev.preventDefault();
+                dragLeaveHandler(ev);
+
+                let file;
+                if (ev.dataTransfer.items) {
+                    // Use DataTransferItemList interface to access the file(s)
+                    for (let i = 0; i < ev.dataTransfer.items.length; i++) {
+                        // If dropped items aren't files, reject them
+                        if (ev.dataTransfer.items[i].kind === 'file') {
+                            file = ev.dataTransfer.items[i].getAsFile();
+                            break
+                        }
+                    }
+                }
+
+                if (file) {
+                    let reader = new FileReader();
+                    reader.readAsText(file, "ASCII");
+                    reader.onload = function (evt) {
+                        const content = evt.target.result;
+                        // document.getElementById("fileContent").innerHTML = content;
+                        const encoded = encodeFileContent(content);
+                        // document.getElementById("fileEncoded").innerHTML = encoded
+                        location.hash = '#filename=' + file.name + '&content=' + encoded;
+                    }
+                    reader.onerror = function (evt) {
+                        // document.getElementById("fileEncoded").innerHTML = "error reading file";
+                    }
+                }
+            }
+
+            function dragOverHandler(ev) {
+                // Prevent default behavior (Prevent file from being opened)
+                ev.preventDefault();
+            }
+
+            let target;
+            function dragEnterHandler(en) {
+                target = en.target;
+                overlay.style.display = 'block';
+                en.stopPropagation();
+                en.preventDefault();
+                return false;
+            }
+
+            function dragLeaveHandler(en) {
+                if ( en.target !== target) {
+                    return;
+                }
+                overlay.style.display = 'none';
+            }
+
+            /**
+             *
+             * @param {string} content
+             * @returns {*}
+             */
+            function encodeFileContent(content) {
+                // return Base64.toBase64(RawDeflate.deflate(Base64.utob(content)));
+                return content;
+            }
+
+            function decodeFileContent(text) {
+                // return Base64.btou(RawDeflate.inflate(Base64.fromBase64(text)));
+                return text;
+            }
+
+            function handleUrlChange() {
+                const hashParams = new URLSearchParams(window.location.hash.substring(1));
+                let solutionTxt = hashParams.has('content') ? decodeFileContent(hashParams.get("content")) : "";
+                let filename = hashParams.has('filename') ? hashParams.get("filename"): "";
+                viewer.render(filename, solutionTxt);
+            }
+
+            window.onhashchange = handleUrlChange;
+            body.ondrop = dropHandler;
+            body.ondragover = dragOverHandler;
+
+            body.ondragenter = dragEnterHandler;
+            body.ondragleave = dragLeaveHandler;
+
+            handleUrlChange()
+        </script>
+
+        <div id="fileContent">
+        </div>
+        <div id="fileEncoded">
+        </div>
+        <div id="fileDecoded">
+        </div>
+    </body>
+</html>

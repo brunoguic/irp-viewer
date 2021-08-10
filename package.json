@@ -1,0 +1,30 @@
+{
+  "name": "irp-viewer",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/.bin/jest --verbose",
+    "start": "node src/app.js"
+  },
+  "keywords": [
+    "IRP",
+    "Inventory Routing",
+    "DIMACS",
+    "VRP",
+    "Vehicle Routing"
+  ],
+  "author": "Bruno Castro",
+  "license": "ISC",
+  "dependencies": {
+    "express": "4.17.1"
+  },
+  "devDependencies": {
+    "jest": "27.0.6"
+  },
+  "jest": {
+    "//": "Comment goes here",
+    "transform": {}
+  }
+}

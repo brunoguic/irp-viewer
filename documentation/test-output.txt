@@ -1,0 +1,38 @@
+(node:22369) ExperimentalWarning: VM Modules is an experimental feature. This feature could change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS tests/dimacs-solution-reader.test.js
+  ✓ empty filename should raise an error (4 ms)
+  ✓ empty content should raise an error
+  ✓ filename should follow the pattern out_INSTANCE.txt (case sensitive) (2 ms)
+  ✓ instance id should follow the pattern defined by DIMACS (case sensitive) (2 ms)
+  ✓ solution file must contains Days starting from 1 (1 ms)
+  ✓ solution file must contains Routes starting from 1
+  ✓ solution file must contains all routes
+  ✓ route lines must follow pattern defined by DIMACS (with spaces) (2 ms)
+  ✓ route lines must start and finishes in node 0 (1 ms)
+  ✓ should contains 6 lines in the end of the file
+  ✓ should contains 6 numbers in the end of the file (1 ms)
+  ✓ parse correct solution routes and deliveries (2 ms)
+  ✓ parse correct solution results
+
+PASS tests/dimacs-rules.test.js
+  ✓ sanity check, test the base instance and solution for the next tests (2 ms)
+  ✓ vehicle capacity constraint, a route should delivery less than the vehicle capacity (1 ms)
+  ✓ depot inventory constraint, the depot never should stock out
+  ✓ customer inventory min constraint, the customer never should has less than the minimum (1 ms)
+  ✓ customer inventory max constraint, the customer never should has more than the maximum
+  ✓ customers should be visited once per period (1 ms)
+  ✓ Euclidean distance should round up (1 ms)
+
+PASS tests/dimacs-instance-reader.test.js
+  ✓ empty instance should raise an error (1 ms)
+  ✓ the first line should contains four parameters (1 ms)
+  ✓ the second line should contains six parameters
+  ✓ the third line should contains eight parameters (1 ms)
+  ✓ read the instance S_abs1n5_2_H3 and check for the correct parameters according to session 5 (4 ms)
+
+Test Suites: 3 passed, 3 total
+Tests:       25 passed, 25 total
+Snapshots:   0 total
+Time:        0.306 s, estimated 1 s
+Ran all test suites.

@@ -1,0 +1,7 @@
+.idea/
+
+# settings file should not be versioned
+/conf/config.json
+
+package-lock.json
+node_modules/
