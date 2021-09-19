@@ -15,6 +15,5 @@ docker run \
     -p 3000:3000 \
     --rm \
     --name $CONTAINER_NAME \
-    -v $PWD:/home/node/app \
     -w /home/node/app \
     $IMAGE_ID
