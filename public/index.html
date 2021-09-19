@@ -133,7 +133,7 @@
 
                 if (file) {
                     let reader = new FileReader();
-                    reader.readAsText(file, "ASCII");
+                    reader.readAsText(file, "UTF8");
                     reader.onload = function (evt) {
                         const content = evt.target.result;
                         // document.getElementById("fileContent").innerHTML = content;
@@ -175,12 +175,12 @@
              */
             function encodeFileContent(content) {
                 // return Base64.toBase64(RawDeflate.deflate(Base64.utob(content)));
-                return content;
+                return encodeURIComponent(content);
             }
 
             function decodeFileContent(text) {
                 // return Base64.btou(RawDeflate.inflate(Base64.fromBase64(text)));
-                return text;
+                return decodeURIComponent(text);
             }
 
             function handleUrlChange() {
