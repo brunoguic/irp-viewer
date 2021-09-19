@@ -1,6 +1,6 @@
 import './typedef.js'
 import {dist} from './dimacs-solution-reader.js';
-
+import {isEquals} from "./utils.js";
 
 
 /**
@@ -146,18 +146,18 @@ export function validateSolution(instance, solution) {
         depotInventoryCost += inventoryByNode[0] * instance.nodes[0].cost;
     }
 
-    customerInventoryCost = Math.round(customerInventoryCost * 100) / 100
-    if (customerInventoryCost !== solution.customerCost) {
+    customerInventoryCost = customerInventoryCost * 100 / 100
+    if (!isEquals(customerInventoryCost, solution.customerCost)) {
         errors.push(`Wrong inventory customer cost reported. Calculated of ${customerInventoryCost}, but was reported ${solution.customerCost}.`);
     }
 
-    depotInventoryCost = Math.round(depotInventoryCost * 100) / 100
-    if (depotInventoryCost !== solution.depotCost) {
+    depotInventoryCost = depotInventoryCost * 100 / 100
+    if (!isEquals(depotInventoryCost, solution.depotCost)) {
         errors.push(`Wrong inventory depot cost reported. Calculated of ${depotInventoryCost}, but was reported ${solution.depotCost}.`);
     }
 
     const totalCost = transportationCost + depotInventoryCost + customerInventoryCost;
-    if (totalCost !== solution.totalCost) {
+    if (!isEquals(totalCost, solution.totalCost)) {
         errors.push(`Wrong total cost reported. Calculated of ${totalCost}, but was reported ${solution.totalCost}.`);
     }
 
