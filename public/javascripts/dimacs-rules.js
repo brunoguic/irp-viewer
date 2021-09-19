@@ -3,6 +3,8 @@ import {dist} from './dimacs-solution-reader.js';
 import {isEquals} from "./utils.js";
 
 
+export const INVENTORY_COST_IN_T0_ERROR = 'INVENTORY_COST_IN_T0_ERROR';
+
 /**
  * A helper method that calculates the amount delivered for each node at each period.
  *
@@ -106,11 +108,19 @@ export function validateSolution(instance, solution) {
     // validates the inventory constraints and calculate inventory cost
     let depotInventoryCost = 0;
     let customerInventoryCost = 0;
+    let depotInventoryT0Cost = 0;
+    let customerInventoryT0Cost = 0;
     const deliveredToNodeByPeriod = getDeliveredByNodeByPeriod(instance, solution);
     const inventoryByNode = Array(instance.n + 1);
     for (let id = 0; id <= instance.n; id++) {
         inventoryByNode[id] = instance.nodes[id].startInv;
     }
+
+    depotInventoryT0Cost = instance.nodes[0].startInv * instance.nodes[0].cost
+    for (let id = 1; id <= instance.n; id++) {
+        customerInventoryT0Cost += instance.nodes[id].startInv * instance.nodes[id].cost
+    }
+
     for (let t = 1; t <= instance.T; t++) {
         inventoryByNode[0] += instance.nodes[0].daily;
         for (let id = 1; id <= instance.n; id++) {
@@ -147,18 +157,29 @@ export function validateSolution(instance, solution) {
     }
 
     customerInventoryCost = customerInventoryCost * 100 / 100
-    if (!isEquals(customerInventoryCost, solution.customerCost)) {
+    if (!isEquals(customerInventoryCost, solution.customerCost) &&
+        !isEquals(customerInventoryCost + customerInventoryT0Cost, solution.customerCost)) {
         errors.push(`Wrong inventory customer cost reported. Calculated of ${customerInventoryCost}, but was reported ${solution.customerCost}.`);
     }
 
     depotInventoryCost = depotInventoryCost * 100 / 100
-    if (!isEquals(depotInventoryCost, solution.depotCost)) {
+    if (!isEquals(depotInventoryCost, solution.depotCost) &&
+        !isEquals(depotInventoryCost + depotInventoryT0Cost, solution.depotCost)) {
         errors.push(`Wrong inventory depot cost reported. Calculated of ${depotInventoryCost}, but was reported ${solution.depotCost}.`);
     }
 
     const totalCost = transportationCost + depotInventoryCost + customerInventoryCost;
-    if (!isEquals(totalCost, solution.totalCost)) {
+    const totalCostWithT0 = transportationCost +
+        depotInventoryT0Cost + depotInventoryCost +
+        customerInventoryT0Cost + customerInventoryCost;
+    if (!isEquals(totalCost, solution.totalCost) &&
+        !isEquals(totalCostWithT0, solution.totalCost)) {
         errors.push(`Wrong total cost reported. Calculated of ${totalCost}, but was reported ${solution.totalCost}.`);
+    }
+
+    // If this solution is using a total cost with t0
+    if (isEquals(totalCostWithT0, solution.totalCost)) {
+        errors.push(INVENTORY_COST_IN_T0_ERROR);
     }
 
     return errors;

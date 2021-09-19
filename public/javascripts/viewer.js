@@ -1,7 +1,7 @@
 import {parseSolution} from "./dimacs-solution-reader.js";
 import {MIN_AXIS} from "./dimacs-solution-reader.js";
 import {MAX_AXIS} from "./dimacs-solution-reader.js";
-import {validateSolution, getInventoryByNodeByPeriod} from "./dimacs-rules.js";
+import {validateSolution, getInventoryByNodeByPeriod, INVENTORY_COST_IN_T0_ERROR} from "./dimacs-rules.js";
 
 export class Viewer {
     /** @type {Solution} */
@@ -21,6 +21,8 @@ export class Viewer {
     solutionDetailDiv;
     /** {HTMLElement} */
     solutionDetailValidBoxDiv;
+    /** {HTMLElement} */
+    solutionDetailValidT0BoxDiv;
     /** {HTMLElement} */
     solutionDetailInvalidBoxDiv;
     /** {HTMLElement} */
@@ -48,6 +50,7 @@ export class Viewer {
      * @param {HTMLElement} welcomeDetailDiv
      * @param {HTMLElement} solutionDetailDiv
      * @param {HTMLElement} solutionDetailValidBoxDiv
+     * @param {HTMLElement} solutionDetailValidT0BoxDiv
      * @param {HTMLElement} solutionDetailInvalidBoxDiv
      * @param {HTMLElement} chartsDiv
      * @param {HTMLElement[]} solutionDrawList
@@ -56,12 +59,14 @@ export class Viewer {
      * @param {HTMLElement} instanceDetailDiv
      * @param {HTMLElement} instanceDraw
      */
-    init(welcomeDetailDiv, solutionDetailDiv, solutionDetailValidBoxDiv, solutionDetailInvalidBoxDiv,
+    init(welcomeDetailDiv,
+         solutionDetailDiv, solutionDetailValidBoxDiv, solutionDetailValidT0BoxDiv,  solutionDetailInvalidBoxDiv,
          chartsDiv, solutionDrawList, errorsDiv,
          welcomeLeftDiv, instanceDetailDiv, instanceDraw) {
         this.welcomeDetailDiv = welcomeDetailDiv;
         this.solutionDetailDiv = solutionDetailDiv;
         this.solutionDetailValidBoxDiv = solutionDetailValidBoxDiv;
+        this.solutionDetailValidT0BoxDiv = solutionDetailValidT0BoxDiv;
         this.solutionDetailInvalidBoxDiv = solutionDetailInvalidBoxDiv;
         this.chartsDiv = chartsDiv;
         this.solutionDrawList = solutionDrawList;
@@ -199,9 +204,17 @@ export class Viewer {
 
         this.solutionDrawList.forEach(div => div.style.display = 'none');
 
+        // handle the instances where includes costs from T0
+        const inventoryCostInT0Error = this.errors.includes(INVENTORY_COST_IN_T0_ERROR);
+        if (inventoryCostInT0Error) {
+            // removes this error from list, and try to give a chance to only shows a warning box
+            this.errors = this.errors.filter(error => error !== INVENTORY_COST_IN_T0_ERROR);
+        }
+
         if (this.errors.length > 0) {
             this.solutionDetailInvalidBoxDiv.style.display = 'block';
             this.solutionDetailValidBoxDiv.style.display = 'none';
+            this.solutionDetailValidT0BoxDiv.style.display = 'none';
             let errorsHtml = '';
             for (const error of this.errors) {
                 errorsHtml += `<li>${error}</li>`;
@@ -210,7 +223,14 @@ export class Viewer {
             this.errorsDiv.style.display = 'block';
         } else {
             this.solutionDetailInvalidBoxDiv.style.display = 'none';
-            this.solutionDetailValidBoxDiv.style.display = 'block';
+            // if this solution is valid (no error) but we found that it was counting the inventory cost in T0
+            if (inventoryCostInT0Error) {
+                this.solutionDetailValidBoxDiv.style.display = 'none';
+                this.solutionDetailValidT0BoxDiv.style.display = 'block';
+            } else {
+                this.solutionDetailValidBoxDiv.style.display = 'block';
+                this.solutionDetailValidT0BoxDiv.style.display = 'none';
+            }
             this.errorsDiv.innerHTML = ``;
             this.errorsDiv.style.display = 'none';
         }

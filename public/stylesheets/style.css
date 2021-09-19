@@ -226,6 +226,18 @@ div#maincontent {
     margin-bottom: 20px;
 }
 
+#solutionDetailValidT0Box {
+    color: #856404;
+    border: 1px #ffeeba;
+    background-color: #fff3cd;
+    border-radius: .25rem;
+    position: relative;
+    padding: .75rem 1.25rem;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
 #solutionDetailInvalidBox {
     color: #721c24;
     background: #f8d7da;

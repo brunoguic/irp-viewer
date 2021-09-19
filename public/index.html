@@ -32,6 +32,9 @@
                         <div id="solutionDetailValidBox" style="display: none">
                             <p>✅ This is a valid solution.</p>
                         </div>
+                        <div id="solutionDetailValidT0Box" style="display: none">
+                            <p>⚠️ This is a valid solution, but it is counting the inventory cost in T0.</p>
+                        </div>
                         <div id="solutionDetailInvalidBox" style="display: none">
                             <p>❌ This is an invalid solution. Check the errors below.</p>
                         </div>
@@ -92,6 +95,7 @@
                 const welcomeDetailDiv = document.getElementById("welcomeDetail");
                 const solutionDetailDiv = document.getElementById("solutionDetail");
                 const solutionDetailValidBoxDiv = document.getElementById("solutionDetailValidBox");
+                const solutionDetailValidT0BoxDiv = document.getElementById("solutionDetailValidT0Box");
                 const solutionDetailInvalidBoxDiv = document.getElementById("solutionDetailInvalidBox");
 
                 const chartsDiv = document.getElementById("charts");
@@ -109,7 +113,8 @@
                 const instanceDraw = document.getElementById("instanceDraw");
 
                 viewer.init(
-                    welcomeDetailDiv, solutionDetailDiv, solutionDetailValidBoxDiv, solutionDetailInvalidBoxDiv,
+                    welcomeDetailDiv,
+                    solutionDetailDiv, solutionDetailValidBoxDiv, solutionDetailValidT0BoxDiv, solutionDetailInvalidBoxDiv,
                     chartsDiv, solutionDrawList, errorsDiv,
                     welcomeLeftDiv, instanceDetailDiv, instanceDraw);
             });
