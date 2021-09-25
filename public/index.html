@@ -111,6 +111,9 @@
             const instanceDetailDiv = document.getElementById("instanceDetail");
             const instanceDraw = document.getElementById("instanceDraw");
 
+            // keep track of the last used anchor to be able to return in case of error
+            let lastAnchor = "";
+
             viewer.init(
                 welcomeDetailDiv,
                 solutionDetailDiv, solutionDetailValidBoxDiv, solutionDetailValidT0BoxDiv, solutionDetailInvalidBoxDiv,
@@ -146,6 +149,7 @@
                         // document.getElementById("fileContent").innerHTML = content;
                         const encoded = encodeFileContent(content);
                         // document.getElementById("fileEncoded").innerHTML = encoded
+                        lastAnchor = location.hash;
                         location.hash = '#filename=' + file.name + '&content=' + encoded;
                     }
                     reader.onerror = function (evt) {
@@ -190,11 +194,17 @@
                 return decodeURIComponent(text);
             }
 
-            function handleUrlChange() {
+            async function handleUrlChange() {
                 const hashParams = new URLSearchParams(window.location.hash.substring(1));
                 let solutionTxt = hashParams.has('content') ? decodeFileContent(hashParams.get("content")) : "";
                 let filename = hashParams.has('filename') ? hashParams.get("filename"): "";
-                viewer.render(filename, solutionTxt);
+                try {
+                    await viewer.render(filename, solutionTxt);
+                } catch (e) {
+                    location.hash = lastAnchor;
+                    alert(e);
+                    console.error(e);
+                }
             }
 
             window.onhashchange = handleUrlChange;

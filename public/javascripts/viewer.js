@@ -121,16 +121,11 @@ export class Viewer {
         }
         this.showSolutionView();
 
-        try {
-            this.solution = parseSolution(filename, content);
-            const instanceId = this.extractInstanceId(filename);
-            this.instance = await this.fetchInstance(instanceId);
-            this.errors = validateSolution(this.instance, this.solution);
-            this.draw();
-        } catch (e) {
-            console.error(e);
-            alert(e);
-        }
+        this.solution = parseSolution(filename, content);
+        const instanceId = this.extractInstanceId(filename);
+        this.instance = await this.fetchInstance(instanceId);
+        this.errors = validateSolution(this.instance, this.solution);
+        this.draw();
     };
 
     /**
