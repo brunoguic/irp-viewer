@@ -76,7 +76,6 @@ export class Viewer {
         this.instanceDraw = instanceDraw;
         this.width = 500
         this.height = 428
-        this.draw();
     }
 
     /**

@@ -91,32 +91,34 @@
             const viewer = new Viewer();
 
 
+            const welcomeDetailDiv = document.getElementById("welcomeDetail");
+            const solutionDetailDiv = document.getElementById("solutionDetail");
+            const solutionDetailValidBoxDiv = document.getElementById("solutionDetailValidBox");
+            const solutionDetailValidT0BoxDiv = document.getElementById("solutionDetailValidT0Box");
+            const solutionDetailInvalidBoxDiv = document.getElementById("solutionDetailInvalidBox");
+
+            const chartsDiv = document.getElementById("charts");
+            const solutionDrawList = /** @type {HTMLElement[]} */ [];
+            solutionDrawList.push(document.getElementById("solutionDrawT1"));
+            solutionDrawList.push(document.getElementById("solutionDrawT2"));
+            solutionDrawList.push(document.getElementById("solutionDrawT3"));
+            solutionDrawList.push(document.getElementById("solutionDrawT4"));
+            solutionDrawList.push(document.getElementById("solutionDrawT5"));
+            solutionDrawList.push(document.getElementById("solutionDrawT6"));
+            const errorsDiv = document.getElementById("errors");
+
+            const welcomeLeftDiv = document.getElementById("welcomeLeft");
+            const instanceDetailDiv = document.getElementById("instanceDetail");
+            const instanceDraw = document.getElementById("instanceDraw");
+
+            viewer.init(
+                welcomeDetailDiv,
+                solutionDetailDiv, solutionDetailValidBoxDiv, solutionDetailValidT0BoxDiv, solutionDetailInvalidBoxDiv,
+                chartsDiv, solutionDrawList, errorsDiv,
+                welcomeLeftDiv, instanceDetailDiv, instanceDraw);
+
             google.charts.setOnLoadCallback(() => {
-                const welcomeDetailDiv = document.getElementById("welcomeDetail");
-                const solutionDetailDiv = document.getElementById("solutionDetail");
-                const solutionDetailValidBoxDiv = document.getElementById("solutionDetailValidBox");
-                const solutionDetailValidT0BoxDiv = document.getElementById("solutionDetailValidT0Box");
-                const solutionDetailInvalidBoxDiv = document.getElementById("solutionDetailInvalidBox");
-
-                const chartsDiv = document.getElementById("charts");
-                const solutionDrawList = /** @type {HTMLElement[]} */ [];
-                solutionDrawList.push(document.getElementById("solutionDrawT1"));
-                solutionDrawList.push(document.getElementById("solutionDrawT2"));
-                solutionDrawList.push(document.getElementById("solutionDrawT3"));
-                solutionDrawList.push(document.getElementById("solutionDrawT4"));
-                solutionDrawList.push(document.getElementById("solutionDrawT5"));
-                solutionDrawList.push(document.getElementById("solutionDrawT6"));
-                const errorsDiv = document.getElementById("errors");
-
-                const welcomeLeftDiv = document.getElementById("welcomeLeft");
-                const instanceDetailDiv = document.getElementById("instanceDetail");
-                const instanceDraw = document.getElementById("instanceDraw");
-
-                viewer.init(
-                    welcomeDetailDiv,
-                    solutionDetailDiv, solutionDetailValidBoxDiv, solutionDetailValidT0BoxDiv, solutionDetailInvalidBoxDiv,
-                    chartsDiv, solutionDrawList, errorsDiv,
-                    welcomeLeftDiv, instanceDetailDiv, instanceDraw);
+                viewer.draw();
             });
 
             function dropHandler(ev) {
