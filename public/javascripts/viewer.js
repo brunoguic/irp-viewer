@@ -139,7 +139,7 @@ export class Viewer {
             return null;
         }
 
-        const match = text.match(/.*([L|S]_abs\dn\d+_\d_[L|H]\d*).*/i);
+        const match = text.match(/.*([L|S]_abs\d+n\d+_\d_[L|H]\d*).*/i);
         if (!match) {
             return null;
         }
