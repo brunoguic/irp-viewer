@@ -4,8 +4,8 @@ export const MIN_AXIS = 0;
 export const MAX_AXIS = 500;
 
 const FILE_FORMAT = /out_(.*)\.txt/;
-const SMALL_INSTANCE = /S_abs\dn(\d+)_(\d+)_[H|L](\d+)$/;
-const LARGE_INSTANCE = /L_abs\dn(\d+)_(\d+)_[H|L]$/;
+const SMALL_INSTANCE = /S_abs\d+n(\d+)_(\d+)_[H|L](\d+)$/;
+const LARGE_INSTANCE = /L_abs\d+n(\d+)_(\d+)_[H|L]$/;
 
 
 /**
